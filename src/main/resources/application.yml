@@ -1,0 +1,23 @@
+risk-analysis:
+  service:
+    ping-service:
+      status-ok: "I'm alive"
+    trace-ip-service:
+      argentina-code: AR
+  repository:
+    apis:
+      api-country-info:
+        url: https://restcountries.eu/rest/v2/alpha/{code}
+      api-currency-info:
+        url: http://data.fixer.io/api/latest
+        access-key: 8c24d7b0b4af6ee357f34672fd7c3757
+        base-currency: EUR
+      api-geolocalization:
+        url: https://api.ip2country.info/ip?{ip}
+spring:
+  redis:
+    host: redis
+    port: 6379
+    timeout: 60
+    cacheExpirations:
+      myControlledCache: 180

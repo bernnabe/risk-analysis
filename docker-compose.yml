@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  risk-analysis:
+    image: risk-analysis:0.0.1
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - proyect_data:/data
+    networks:
+      - redis-net
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    command: ["redis-server", "--bind", "redis", "--port", "6379"]
+    hostname: redis
+    networks:
+      - redis-net
+    volumes:
+      - redis_data:/data
+
+networks:
+  redis-net:
+
+volumes:
+  proyect_data:
+    driver: local
+  redis_data:
+    driver: local
