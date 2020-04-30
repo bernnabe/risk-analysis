@@ -42,7 +42,7 @@ public class StatisticRepositoryImpl extends BaseRepository<Statistic> implement
 
         while (statistics.hasNext()) {
             statistic = statistics.next();
-            value = statistics.next().getValue();
+            value = statistic.getValue();
 
             result = new StatisticScore();
             result.setIsoCode(value.getCountryCode());
