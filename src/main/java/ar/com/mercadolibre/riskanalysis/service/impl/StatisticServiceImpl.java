@@ -9,17 +9,19 @@ import org.apache.commons.math3.util.Precision;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Map;
 
 @Service
 public class StatisticServiceImpl implements StatisticService {
 
     private final StatisticRepository statisticRepository;
+    private final StatisticScoreComparator statisticScoreComparator;
 
-    public StatisticServiceImpl(StatisticRepository statisticRepository) {
+    public StatisticServiceImpl(StatisticRepository statisticRepository, StatisticScoreComparator statisticScoreComparator) {
         this.statisticRepository = statisticRepository;
+        this.statisticScoreComparator = statisticScoreComparator;
     }
 
     @Override
@@ -29,10 +31,9 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public Statistic find() throws IOException {
-        final Map<String, StatisticScore> scores = this.statisticRepository.findScores();
-        final StatisticScoreComparator comparator = new StatisticScoreComparator();
-        final StatisticScore minScore = Collections.min(scores.values(), comparator);
-        final StatisticScore maxScore = Collections.max(scores.values(), comparator);
+        final Collection<StatisticScore> scores = this.statisticRepository.findScores().values();
+        final StatisticScore minScore = Collections.min(scores, this.statisticScoreComparator);
+        final StatisticScore maxScore = Collections.max(scores, this.statisticScoreComparator);
         final double averageDistance = getAverageDistance(scores);
 
         Statistic statistic = new Statistic();
@@ -43,21 +44,23 @@ public class StatisticServiceImpl implements StatisticService {
         return statistic;
     }
 
-    private double getAverageDistance(Map<String, StatisticScore> scores) {
+    private double getAverageDistance(Collection<StatisticScore> scores) {
         double totalHitCount = 0.0;
         double totalDistance = 0.0;
 
-        for (StatisticScore score : scores.values()) {
+        for (StatisticScore score : scores) {
             totalDistance += score.getDistance() * score.getHitCount();
             totalHitCount += score.getHitCount();
         }
 
-        if (totalHitCount == 0.0) return 0.0;
+        if (totalHitCount == 0.0) {
+            return 0.0;
+        }
 
         return Precision.round(totalDistance / totalHitCount, 2);
     }
 
-    public class StatisticScoreComparator implements Comparator<StatisticScore> {
+    public static class StatisticScoreComparator implements Comparator<StatisticScore> {
         @Override
         public int compare(StatisticScore s1, StatisticScore s2) {
             return s1.getHitCount().compareTo(s2.getHitCount());

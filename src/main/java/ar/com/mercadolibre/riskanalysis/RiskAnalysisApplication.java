@@ -1,5 +1,6 @@
 package ar.com.mercadolibre.riskanalysis;
 
+import ar.com.mercadolibre.riskanalysis.service.impl.StatisticServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableCaching
 @Slf4j
 @EnableSwagger2
+//@EnableCircuitBreaker
 public class RiskAnalysisApplication implements CommandLineRunner {
     @Value("${spring.redis.host}")
     private String redisHostName;
@@ -44,5 +46,10 @@ public class RiskAnalysisApplication implements CommandLineRunner {
         RedisTemplate<?, ?> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
         return template;
+    }
+
+    @Bean
+    public StatisticServiceImpl.StatisticScoreComparator statisticScoreComparator() {
+        return new StatisticServiceImpl.StatisticScoreComparator();
     }
 }
