@@ -19,9 +19,9 @@ public class StatisticServiceImpl implements StatisticService {
     private final StatisticRepository statisticRepository;
     private final StatisticScoreComparator statisticScoreComparator;
 
-    public StatisticServiceImpl(StatisticRepository statisticRepository, StatisticScoreComparator statisticScoreComparator) {
+    public StatisticServiceImpl(StatisticRepository statisticRepository) {
         this.statisticRepository = statisticRepository;
-        this.statisticScoreComparator = statisticScoreComparator;
+        this.statisticScoreComparator = new StatisticScoreComparator();
     }
 
     @Override
@@ -53,9 +53,7 @@ public class StatisticServiceImpl implements StatisticService {
             totalHitCount += score.getHitCount();
         }
 
-        if (totalHitCount == 0.0) {
-            return 0.0;
-        }
+        if (totalHitCount == 0.0) return 0.0;
 
         return Precision.round(totalDistance / totalHitCount, 2);
     }

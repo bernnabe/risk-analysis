@@ -1,6 +1,5 @@
 package ar.com.mercadolibre.riskanalysis;
 
-import ar.com.mercadolibre.riskanalysis.service.impl.StatisticServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -46,10 +45,5 @@ public class RiskAnalysisApplication implements CommandLineRunner {
         RedisTemplate<?, ?> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
         return template;
-    }
-
-    @Bean
-    public StatisticServiceImpl.StatisticScoreComparator statisticScoreComparator() {
-        return new StatisticServiceImpl.StatisticScoreComparator();
     }
 }
