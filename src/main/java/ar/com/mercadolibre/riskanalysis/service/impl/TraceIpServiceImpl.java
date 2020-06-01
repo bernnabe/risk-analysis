@@ -48,14 +48,11 @@ public class TraceIpServiceImpl implements TraceIpService {
         validateGeolocalization(geoLocalization);
 
         final Country country = this.countryRepository.find(geoLocalization.getCountryCode());
-        String currencyCode = "";
-        final Optional<Currency> d = country.getCurrencies()
+        final String currencyCode = country.getCurrencies()
                 .stream()
-                .findFirst();
-
-        if (d.isPresent()) {
-            currencyCode = d.get().getCode();
-        }
+                .findFirst()
+                .get()
+                .getCode();
 
         final CurrencyRate currencyRate = this.currencyRateRepository.find(currencyCode);
         final String currencyDescription = getCurrencyDescription(currencyCode, currencyRate);
